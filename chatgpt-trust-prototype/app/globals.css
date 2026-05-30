@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-sidebar: #171717;
+  --color-main: #212121;
+  --color-border-chat: #2f2f2f;
+  --color-text-primary: #ececec;
+  --color-text-muted: #8e8ea0;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-main);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar styling — closer to ChatGPT dark UI */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #424242 transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: #424242;
+  border-radius: 9999px;
+}
+
+/* Markdown body — assistant messages (Phase 05) */
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.markdown-body hr {
+  border-color: var(--color-border-chat);
+  margin: 1rem 0;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--color-border-chat);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
