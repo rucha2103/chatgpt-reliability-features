@@ -11,11 +11,10 @@ import { stripTemporalFromBody } from "@/lib/citations/stripTemporalFromBody";
 
 interface MarkdownMessageProps {
   content: string;
-  messageId: string;
   citations?: Citation[];
 }
 
-function createMarkdownComponents(messageId: string): Components {
+function createMarkdownComponents(): Components {
   return {
     p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
     ul: ({ children }) => (
@@ -73,7 +72,6 @@ function createMarkdownComponents(messageId: string): Components {
 
 export function MarkdownMessage({
   content,
-  messageId,
   citations,
 }: MarkdownMessageProps) {
   if (!content) return null;
@@ -86,7 +84,7 @@ export function MarkdownMessage({
     <div className="markdown-body text-[15px] leading-7 text-text-primary">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        components={createMarkdownComponents(messageId)}
+        components={createMarkdownComponents()}
       >
         {bodyContent}
       </ReactMarkdown>

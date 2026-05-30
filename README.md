@@ -23,3 +23,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000).
 
 See `chatgpt-trust-prototype/GROQ-SETUP.md` for API key setup.
+
+## Deploy to Netlify
+
+The prototype (UI + `/api/*` routes) deploys to Netlify using the root `netlify.toml`. See [chatgpt-trust-prototype/NETLIFY-DEPLOY.md](chatgpt-trust-prototype/NETLIFY-DEPLOY.md).

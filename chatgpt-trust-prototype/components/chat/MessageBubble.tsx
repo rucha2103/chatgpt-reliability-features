@@ -34,7 +34,6 @@ function AssistantMessage({ message, isStreaming }: MessageBubbleProps) {
             ) : (
               <MarkdownMessage
                 content={message.content}
-                messageId={message.id}
                 citations={message.citations}
               />
             )}

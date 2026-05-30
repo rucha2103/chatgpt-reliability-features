@@ -1,0 +1,13 @@
+# Monorepo: Next.js app lives in chatgpt-trust-prototype/
+# https://docs.netlify.com/frameworks/next-js/overview/
+
+[build]
+  base = "chatgpt-trust-prototype"
+  command = "npm ci && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
