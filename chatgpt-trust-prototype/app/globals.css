@@ -65,3 +65,19 @@ body {
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
+
+/* Shiki code block styling for Architect Mode */
+.shiki {
+  background-color: #0d1117 !important;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.shiki code {
+  font-family: var(--font-mono), monospace;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
