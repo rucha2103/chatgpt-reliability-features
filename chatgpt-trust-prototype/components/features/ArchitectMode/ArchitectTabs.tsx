@@ -27,7 +27,7 @@ export function ArchitectTabs({ solutions }: ArchitectTabsProps) {
       for (const solution of solutions) {
         try {
           const lang = solution.language.toLowerCase();
-          const supportedLang = highlighter.getLoadedLanguages().includes(lang as any) ? lang : 'text';
+          const supportedLang = highlighter.getLoadedLanguages().includes(lang as string) ? lang : 'text';
           const html = highlighter.codeToHtml(solution.code, {
             lang: supportedLang,
             theme: 'github-dark'
