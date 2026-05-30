@@ -1,11 +1,12 @@
 import type { Citation } from "@/types/chat";
+import { apiUrl } from "@/lib/api/apiUrl";
 
 export async function verifyCitationsClient(
   citations: Citation[],
 ): Promise<Citation[]> {
   if (!citations.length) return [];
 
-  const response = await fetch("/api/citations/verify", {
+  const response = await fetch(apiUrl("/api/citations/verify"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ citations }),

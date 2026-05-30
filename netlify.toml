@@ -1,4 +1,7 @@
-# Monorepo: Next.js app lives in chatgpt-trust-prototype/
+# One Netlify site deploys the full Next.js app:
+#   /          → frontend (chat UI)
+#   /api/*     → backend (Groq API routes)
+# App path: chatgpt-trust-prototype/
 # https://docs.netlify.com/frameworks/next-js/overview/
 
 [build]

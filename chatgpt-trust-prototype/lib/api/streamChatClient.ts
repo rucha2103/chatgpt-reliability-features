@@ -1,4 +1,5 @@
 import type { ChatRequestBody, StreamEvent } from "@/lib/api/chatProtocol";
+import { apiUrl } from "@/lib/api/apiUrl";
 
 export interface StreamChatCallbacks {
   onChunk: (content: string) => void;
@@ -36,7 +37,7 @@ export async function streamChat(
   body: ChatRequestBody,
   callbacks: StreamChatCallbacks,
 ): Promise<void> {
-  const response = await fetch("/api/chat", {
+  const response = await fetch(apiUrl("/api/chat"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ...body, stream: true, responseMode: "text" }),

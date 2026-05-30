@@ -1,5 +1,6 @@
 import type { Tone } from "@/types/chat";
 import type { StreamEvent } from "@/lib/api/chatProtocol";
+import { apiUrl } from "@/lib/api/apiUrl";
 
 export interface StreamCallbacks {
   onChunk: (content: string) => void;
@@ -109,7 +110,7 @@ export async function streamToneRetry(
   tone: Tone,
   callbacks: StreamCallbacks,
 ): Promise<void> {
-  const response = await fetch("/api/tone-retry", {
+  const response = await fetch(apiUrl("/api/tone-retry"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ originalText, tone }),

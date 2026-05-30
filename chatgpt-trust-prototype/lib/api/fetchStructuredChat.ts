@@ -2,11 +2,12 @@ import type {
   ChatRequestBody,
   StructuredChatResponse,
 } from "@/lib/api/chatProtocol";
+import { apiUrl } from "@/lib/api/apiUrl";
 
 export async function fetchStructuredChat(
   body: ChatRequestBody,
 ): Promise<StructuredChatResponse> {
-  const response = await fetch("/api/chat", {
+  const response = await fetch(apiUrl("/api/chat"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

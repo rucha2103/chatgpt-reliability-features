@@ -1,69 +1,93 @@
-# Deploy to Netlify
+# Deploy to Netlify (frontend + backend)
 
-This project is a **Next.js** app. The “backend” is the App Router API routes:
+This repo is one **Next.js** application. A single Netlify deploy serves:
 
-- `POST /api/chat` — streaming + structured chat (Groq)
-- `POST /api/citations/verify` — URL verification for citations
-- `POST /api/tone-retry` — tone rewrite stream
+| URL | What it is |
+|-----|------------|
+| `https://<your-site>.netlify.app/` | **Frontend** — ChatGPT-style UI |
+| `https://<your-site>.netlify.app/api/chat` | **Backend** — Groq chat API |
+| `https://<your-site>.netlify.app/api/citations/verify` | Citation URL checks |
+| `https://<your-site>.netlify.app/api/tone-retry` | Tone rewrite stream |
 
-Netlify runs the full app (UI + API) via the [Next.js runtime](https://docs.netlify.com/frameworks/next-js/overview/).
+You do **not** need a second Netlify site for the frontend. The root `netlify.toml` already deploys both.
 
-## 1. Connect the GitHub repo
+---
 
-1. Open [Netlify](https://app.netlify.com/) → **Add new site** → **Import an existing project**.
-2. Choose **GitHub** and select `rucha2103/chatgpt-reliability-features`.
-3. Netlify should read settings from the repo root `netlify.toml`:
+## Recommended: one Netlify site (frontend + API)
+
+### 1. Import from GitHub
+
+1. [app.netlify.com](https://app.netlify.com/) → **Add new site** → **Import an existing project**
+2. Repo: **`rucha2103/chatgpt-reliability-features`**
+3. Confirm settings from `netlify.toml`:
    - **Base directory:** `chatgpt-trust-prototype`
    - **Build command:** `npm ci && npm run build`
    - **Plugin:** `@netlify/plugin-nextjs`
 
-If you configure manually instead of using `netlify.toml`, set **Base directory** to `chatgpt-trust-prototype` (required).
+### 2. Environment variables
 
-## 2. Environment variables
+**Site configuration → Environment variables:**
 
-In **Site configuration → Environment variables**, add:
+| Variable | Required | Notes |
+|----------|----------|--------|
+| `GROQ_API_KEY` | Yes | From [Groq console](https://console.groq.com/keys) |
+| `GROQ_MODEL` | No | Default `llama-3.3-70b-versatile` |
 
-| Variable | Required | Example |
-|----------|----------|---------|
-| `GROQ_API_KEY` | Yes | `gsk_...` from [Groq console](https://console.groq.com/keys) |
-| `GROQ_MODEL` | No | `llama-3.3-70b-versatile` |
+Do **not** set `NEXT_PUBLIC_API_BASE_URL` for this setup (same-origin `/api` is used).
 
-Apply to **Production** (and **Deploy previews** if you use PR previews).
+### 3. Deploy and verify
 
-Never commit real keys; use Netlify’s UI only.
+1. **Deploy site** and wait for a green build.
+2. Open **`https://<your-site>.netlify.app/`** — you should see the chat UI (sidebar, input, empty state).
+3. Send a test message — it should stream a reply (calls `/api/chat` on the same host).
 
-## 3. Deploy
+If step 2 works but step 3 fails, check `GROQ_API_KEY` and redeploy.
 
-Click **Deploy site**. First build may take a few minutes.
+---
 
-Your live URL will look like `https://<site-name>.netlify.app`. Chat calls same-origin `/api/*` routes automatically.
+## Optional: two Netlify sites (advanced)
 
-## 4. Optional: CLI deploy
+Only use this if you intentionally want different URLs for UI vs API (e.g. `my-app.netlify.app` and `my-api.netlify.app`).
+
+| Site | Deploy | Env vars |
+|------|--------|----------|
+| **API site** | Same repo, base `chatgpt-trust-prototype` | `GROQ_API_KEY`, `GROQ_MODEL`, `FRONTEND_ORIGIN=https://your-frontend.netlify.app` |
+| **Frontend site** | Same repo, base `chatgpt-trust-prototype` | `NEXT_PUBLIC_API_BASE_URL=https://your-api.netlify.app`, `GROQ_API_KEY` (structured routes still run server-side on whichever site receives `/api` calls) |
+
+For most graduation demos, **one site is simpler** and avoids CORS issues.
+
+---
+
+## CLI deploy
 
 ```bash
 npm install -g netlify-cli
 netlify login
-cd chatgpt-trust-prototype
-netlify init   # link to new or existing site
+cd "/path/to/Graduation Project"
+netlify init
 netlify env:set GROQ_API_KEY "gsk_your_key"
 netlify deploy --build --prod
 ```
 
-From repo root with linked site:
-
-```bash
-netlify deploy --build --prod --filter chatgpt-trust-prototype
-```
+---
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| Build fails on `eslint` | Run `npm run build` locally; fix reported errors. |
-| `GROQ_API_KEY` errors in chat | Add env var in Netlify and **trigger redeploy**. |
-| Citation verify timeouts | Netlify function time limits apply; heavy URL checks may need fewer sources or a paid plan. |
-| 404 on `/api/chat` | Ensure `@netlify/plugin-nextjs` is enabled and base directory is `chatgpt-trust-prototype`. |
+| Problem | Fix |
+|---------|-----|
+| Blank page at `/` | Wrong base directory — must be `chatgpt-trust-prototype`. |
+| UI loads, chat errors | Add `GROQ_API_KEY`, redeploy. |
+| 404 on `/api/chat` | Enable `@netlify/plugin-nextjs`; redeploy from latest `main`. |
+| Only see JSON at `/` | You may be hitting an API path — open `/` without `/api`. |
+| Build fails | Run `npm run build` locally in `chatgpt-trust-prototype`. |
 
-## Note on “backend only”
+---
 
-There is no separate Express server. Deploying this Next.js app on Netlify hosts both the ChatGPT-style UI and the Groq API routes together. That is the intended setup for this prototype.
+## Local vs production
+
+| | Local | Netlify |
+|---|--------|---------|
+| Frontend | http://localhost:3000 | `https://<site>.netlify.app` |
+| API | http://localhost:3000/api/... | `https://<site>.netlify.app/api/...` |
+
+Same app, same paths — no extra frontend build step.
